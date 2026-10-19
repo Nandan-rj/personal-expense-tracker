@@ -1,0 +1,22 @@
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
+
+# Browser/test artifacts
+playwright-report/
+test-results/
+coverage/

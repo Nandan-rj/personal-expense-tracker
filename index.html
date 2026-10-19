@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f6">
+  <meta name="description" content="A private, browser-based expense tracker for students.">
+  <title>Personal Expense Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/storage.js"></script>
+  <script defer src="js/charts.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#dashboard" aria-label="Pennywise home">
+        <span class="brand-mark" aria-hidden="true">₹</span>
+        <span class="brand-copy"><strong>Pennywise</strong><small>STUDENT FINANCE</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="main-nav">
+        <a class="nav-link active" href="#dashboard"><span class="nav-icon" aria-hidden="true">⌂</span>Overview</a>
+        <a class="nav-link" href="#transactions"><span class="nav-icon" aria-hidden="true">▤</span>Transactions</a>
+        <a class="nav-link" href="#budget"><span class="nav-icon" aria-hidden="true">◉</span>Monthly budget</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-card">
+          <span class="privacy-icon" aria-hidden="true">⌑</span>
+          <strong>Your data stays yours</strong>
+          <p>Saved only in this browser. It won't sync to other devices.</p>
+        </div>
+        <div class="student-tag"><span class="student-avatar">S</span><span><strong>Student workspace</strong><small>Personal tracker</small></span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-current">Overview</strong></div>
+        <div class="topbar-actions">
+          <button class="button button-quiet" id="load-demo" type="button"><span aria-hidden="true">✦</span> Load demo data</button>
+          <button class="button button-primary" id="add-expense-top" type="button"><span aria-hidden="true">＋</span> Add expense</button>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <section class="page-heading" id="dashboard">
+          <div>
+            <p class="eyebrow" id="today-label">YOUR MONEY, MADE CLEAR</p>
+            <h1>Good day, student <span class="wave" aria-hidden="true">✳</span></h1>
+            <p class="page-subtitle">A little clarity goes a long way. Here's your spending at a glance.</p>
+          </div>
+          <label class="period-picker">Showing
+            <select id="period-filter" aria-label="Dashboard period">
+              <option value="month">This month</option>
+              <option value="30days">Last 30 days</option>
+              <option value="all">All time</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="summary-grid" aria-label="Spending summary">
+          <article class="summary-card card-spent">
+            <div class="summary-top"><span>Total spent</span><span class="metric-icon coral-icon" aria-hidden="true">↗</span></div>
+            <strong class="metric-value" id="selected-total">₹0</strong>
+            <span class="metric-foot" id="selected-caption">For this month</span>
+          </article>
+          <article class="summary-card">
+            <div class="summary-top"><span>This month</span><span class="metric-icon green-icon" aria-hidden="true">◷</span></div>
+            <strong class="metric-value" id="month-total">₹0</strong>
+            <span class="metric-foot">Since the 1st of this month</span>
+          </article>
+          <article class="summary-card">
+            <div class="summary-top"><span>Transactions</span><span class="metric-icon lilac-icon" aria-hidden="true">▤</span></div>
+            <strong class="metric-value" id="transaction-count">0</strong>
+            <span class="metric-foot">Recorded expenses</span>
+          </article>
+          <article class="summary-card">
+            <div class="summary-top"><span>Top category</span><span class="metric-icon yellow-icon" aria-hidden="true">✳</span></div>
+            <strong class="metric-value metric-category" id="top-category">—</strong>
+            <span class="metric-foot" id="top-category-caption">Based on this month</span>
+          </article>
+        </section>
+
+        <section class="analytics-grid" aria-label="Spending analytics">
+          <article class="panel chart-panel">
+            <div class="panel-heading">
+              <div><h2>Spending overview</h2><p>Your monthly spending, over the last 6 months</p></div>
+              <span class="panel-badge"><span class="legend-dot"></span> Expenses</span>
+            </div>
+            <div id="monthly-chart" class="chart-canvas" role="img" aria-label="Monthly spending chart"></div>
+          </article>
+          <article class="panel category-panel">
+            <div class="panel-heading">
+              <div><h2>Where it goes</h2><p>Category breakdown this month</p></div>
+            </div>
+            <div class="category-chart-wrap">
+              <div id="category-chart" class="donut-chart" role="img" aria-label="Spending by category"></div>
+              <div class="donut-center"><strong id="category-total">₹0</strong><span>this month</span></div>
+            </div>
+            <ul class="category-legend" id="category-legend"></ul>
+          </article>
+        </section>
+
+        <section class="lower-grid">
+          <article class="panel transactions-panel" id="transactions">
+            <div class="panel-heading transaction-heading">
+              <div><h2>Recent transactions</h2><p>Your latest spending, all in one place</p></div>
+              <button type="button" class="text-button export-link" id="export-csv">Export CSV <span aria-hidden="true">↓</span></button>
+            </div>
+            <div class="filters-row">
+              <label class="search-field"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search expenses..." aria-label="Search expenses"></label>
+              <select id="category-filter" aria-label="Filter by category"><option value="">All categories</option></select>
+              <input id="month-filter" type="month" aria-label="Filter by month">
+              <select id="sort-filter" aria-label="Sort transactions">
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+                <option value="amount-desc">Amount: high to low</option>
+                <option value="amount-asc">Amount: low to high</option>
+              </select>
+            </div>
+            <div class="table-wrap" id="transactions-list">
+              <table>
+                <thead><tr><th scope="col">DESCRIPTION</th><th scope="col">CATEGORY</th><th scope="col">DATE</th><th scope="col">PAYMENT</th><th scope="col" class="amount-cell">AMOUNT</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+                <tbody id="transaction-rows"></tbody>
+              </table>
+              <div class="empty-state" id="empty-state" hidden>
+                <span class="empty-icon" aria-hidden="true">▤</span>
+                <strong id="empty-title">Nothing here yet</strong>
+                <p id="empty-description">Add your first expense or load demo data to see your dashboard come to life.</p>
+                <button type="button" class="button button-primary button-small" id="empty-add">Add your first expense</button>
+              </div>
+            </div>
+            <div class="table-footer"><span id="table-count">Showing 0 transactions</span><button type="button" class="text-button danger-link" id="clear-data">Clear all data</button></div>
+          </article>
+
+          <aside class="side-panels">
+            <section class="panel budget-panel" id="budget">
+              <div class="panel-heading">
+                <div><h2>Monthly budget</h2><p>Your personal spending plan</p></div>
+                <span class="budget-icon" aria-hidden="true">◉</span>
+              </div>
+              <div class="budget-amount-row"><span>Monthly limit</span><strong id="budget-limit-display">Not set</strong></div>
+              <form id="budget-form" class="budget-form">
+                <label class="sr-only" for="budget-input">Monthly budget in rupees</label>
+                <span class="rupee-prefix">₹</span>
+                <input id="budget-input" type="number" min="1" max="100000000" step="0.01" placeholder="Set your monthly limit">
+                <button type="submit" class="button button-dark button-small">Save</button>
+              </form>
+              <div class="budget-progress-track" role="progressbar" id="budget-progress" aria-label="Monthly budget used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="budget-progress-fill"></span></div>
+              <div class="budget-progress-label"><span id="budget-spent-label">₹0 spent</span><span id="budget-remaining">Set a budget to track</span></div>
+              <p class="budget-status" id="budget-status">A budget is a planning tool, not a bank balance.</p>
+            </section>
+            <section class="panel quick-add-panel" id="expense-form-section">
+              <div class="panel-heading"><div><h2 id="form-heading">Quick add</h2><p id="form-subtitle">Keep track as you go</p></div><span class="quick-add-icon" aria-hidden="true">＋</span></div>
+              <form id="expense-form" novalidate>
+                <input id="expense-id" type="hidden">
+                <label class="form-label" for="expense-title">What was it for?</label>
+                <input class="form-control" id="expense-title" name="title" maxlength="80" placeholder="e.g. Lunch with friends" required>
+                <div class="form-grid">
+                  <div><label class="form-label" for="expense-amount">Amount</label><div class="amount-input"><span>₹</span><input id="expense-amount" name="amount" type="number" min="0.01" max="100000000" step="0.01" placeholder="0.00" required></div></div>
+                  <div><label class="form-label" for="expense-category">Category</label><select class="form-control" id="expense-category" name="category" required></select></div>
+                </div>
+                <div class="form-grid">
+                  <div><label class="form-label" for="expense-date">Date</label><input class="form-control" id="expense-date" name="date" type="date" required></div>
+                  <div><label class="form-label" for="expense-payment">Payment method</label><select class="form-control" id="expense-payment" name="payment" required><option>UPI</option><option>Cash</option><option>Card</option><option>Net Banking</option><option>Other</option></select></div>
+                </div>
+                <label class="form-label" for="expense-notes">Notes <span class="optional-label">OPTIONAL</span></label>
+                <input class="form-control" id="expense-notes" name="notes" maxlength="160" placeholder="Add a little detail...">
+                <p class="form-error" id="form-error" role="alert" hidden></p>
+                <div class="form-actions"><button class="button button-primary submit-expense" id="submit-expense" type="submit">Add expense <span aria-hidden="true">→</span></button><button class="button button-quiet cancel-edit" id="cancel-edit" type="button" hidden>Cancel</button></div>
+              </form>
+              <p class="local-note"><span aria-hidden="true">⌑</span> Saved privately in this browser</p>
+            </section>
+          </aside>
+        </section>
+
+        <footer class="page-footer"><span>Made for mindful money moments <span aria-hidden="true">✳</span></span><span>Personal Expense Tracker · AAT-1 Portfolio Activity</span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
