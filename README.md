@@ -135,6 +135,6 @@ This project demonstrates semantic HTML, responsive CSS, JavaScript event handli
 
 ## Repository and license
 
-GitHub repository: _Not yet published._
+GitHub repository: [Nandan-rj/personal-expense-tracker](https://github.com/Nandan-rj/personal-expense-tracker) (public).
 
 This project is distributed under the MIT License; see [LICENSE](LICENSE).

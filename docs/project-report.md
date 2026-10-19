@@ -164,8 +164,10 @@ The following genuine screenshots were captured from the running application usi
 
 ## 13. GitHub Repository Screenshot and Link
 
-- **Repository URL:** Not published at the time of report preparation.
-- **GitHub repository screenshot:** Not available; capture only after a repository is actually published.
+- **Repository URL:** [https://github.com/Nandan-rj/personal-expense-tracker](https://github.com/Nandan-rj/personal-expense-tracker) (public).
+- **GitHub repository screenshot:** Captured from the published repository.
+
+![Public GitHub repository page](../assets/screenshots/github-repository.png)
 
 ## 14. Repository Structure
 
@@ -184,7 +186,8 @@ personal-expense-tracker/
 │   └── screenshots/
 │       ├── dashboard.png
 │       ├── transactions.png
-│       └── budget-analytics.png
+│       ├── budget-analytics.png
+│       └── github-repository.png
 ├── .gitignore
 ├── LICENSE
 └── README.md
